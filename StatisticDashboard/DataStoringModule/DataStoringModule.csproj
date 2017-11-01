@@ -8,4 +8,8 @@
     <PackageReference Include="Dapper" Version="1.50.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Models\Models.csproj" />
+  </ItemGroup>
+
 </Project>
