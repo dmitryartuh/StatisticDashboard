@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DataStoringModule\DataStoringModule.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 

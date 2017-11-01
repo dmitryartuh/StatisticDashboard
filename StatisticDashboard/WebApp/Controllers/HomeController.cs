@@ -10,7 +10,7 @@ namespace WebApp.Controllers
         public async Task<IActionResult> Index()
         {
             var test = new WotService();
-            var res = await test.LoadDateAsync("titanik3d");
+            var res = await test.LoadPlayerDataAsync("titanik3d");
             return View();
         }
 

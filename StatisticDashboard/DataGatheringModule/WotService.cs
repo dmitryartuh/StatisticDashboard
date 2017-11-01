@@ -20,16 +20,24 @@ namespace DataGatheringModule
             _httpClient.BaseAddress = new Uri(_urlBuilder.GetBaseUrl());
         }
 
-        public async Task<PlayersSearchResultDto> LoadDateAsync(string searchPhrase)
+        public async Task<PlayersSearchResultDto> LoadPlayerDataAsync(string searchPhrase)
         {
-            var model = default(PlayersSearchResultDto);
-            var response =
-                await
-                    _httpClient.GetAsync(_urlBuilder.GetSearchUrl(searchPhrase));
+            return await Get<PlayersSearchResultDto>(_urlBuilder.GetSearchUrl(searchPhrase));
+        }
+
+        public async Task<PlayersSearchResultDto> LoadPersonalDataAsync(string accounntId)
+        {
+            return await Get<PlayersSearchResultDto>(_urlBuilder.GetPlayerDataUrl(accounntId));
+        }
+
+        public async Task<T> Get<T>(string url)
+        {
+            T model = default(T);
+            var response = await _httpClient.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync();
-                model = JsonConvert.DeserializeObject<PlayersSearchResultDto>(json,
+                model = JsonConvert.DeserializeObject<T>(json,
                     new JsonSerializerSettings
                     {
                         ContractResolver = new DefaultContractResolver
