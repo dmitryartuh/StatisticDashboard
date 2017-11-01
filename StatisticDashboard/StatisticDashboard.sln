@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGatheringModule", "Data
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataStoringModule", "DataStoringModule\DataStoringModule.csproj", "{AB063885-10DE-4F9C-8E2C-91F947597198}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{E85FA1BA-9861-47A8-9179-3E515EC5E4D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{AB063885-10DE-4F9C-8E2C-91F947597198}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB063885-10DE-4F9C-8E2C-91F947597198}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB063885-10DE-4F9C-8E2C-91F947597198}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E85FA1BA-9861-47A8-9179-3E515EC5E4D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E85FA1BA-9861-47A8-9179-3E515EC5E4D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E85FA1BA-9861-47A8-9179-3E515EC5E4D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E85FA1BA-9861-47A8-9179-3E515EC5E4D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
