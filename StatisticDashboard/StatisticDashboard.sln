@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp", "WebApp\WebApp.csproj", "{E1496377-3F97-4C7A-80EE-03563F17F2C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp", "WebApp\WebApp.csproj", "{E1496377-3F97-4C7A-80EE-03563F17F2C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataGatheringModule", "DataGatheringModule\DataGatheringModule.csproj", "{EC4B7F60-C8D6-40EC-BA33-BAFAD590D8F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{E1496377-3F97-4C7A-80EE-03563F17F2C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E1496377-3F97-4C7A-80EE-03563F17F2C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E1496377-3F97-4C7A-80EE-03563F17F2C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC4B7F60-C8D6-40EC-BA33-BAFAD590D8F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC4B7F60-C8D6-40EC-BA33-BAFAD590D8F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC4B7F60-C8D6-40EC-BA33-BAFAD590D8F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC4B7F60-C8D6-40EC-BA33-BAFAD590D8F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
