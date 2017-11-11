@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DataGatheringModule\DataGatheringModule.csproj" />
+    <ProjectReference Include="..\DataStoringModule\DataStoringModule.csproj" />
   </ItemGroup>
 
   <Target Name="DebugRunWebpack" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('wwwroot\dist') ">
