@@ -6,6 +6,8 @@ namespace Models.Entities
     {
         public Guid PlayerId { get; set; }
 
+        public Guid FrameId { get; set; }
+
         public string Json { get; set; }
 
         public DateTime DateTime { get; set; }
