@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Models.DtoModels
+﻿namespace Models.DtoModels
 {
     public class ResponseModel<T>
     {
@@ -8,6 +6,6 @@ namespace Models.DtoModels
 
         public MetaDto Meta { get; set; }
 
-        public IEnumerable<T> Data { get; set; }
+        public T Data { get; set; }
     }
 }

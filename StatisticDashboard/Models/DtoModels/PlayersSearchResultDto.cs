@@ -1,6 +1,8 @@
-﻿namespace Models.DtoModels
+﻿using System.Collections.Generic;
+
+namespace Models.DtoModels
 {
-    public class PlayersSearchResultDto : ResponseModel<PlayerDto>
+    public class PlayersSearchResultDto : ResponseModel<IEnumerable<PlayerDto>>
     {
     }
 }
