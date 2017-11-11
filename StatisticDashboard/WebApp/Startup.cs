@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.Webpack;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DataStoringModule;
+using DataStoringModule.Interfaces;
 
 namespace WebApp
 {
@@ -22,6 +24,9 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string connectionString = @"Server=(localdb)\MSSQLLocalDB;Initial Catalog=StatisticDashboard;Integrated Security=True";
+            services.AddTransient<IPlayerRepository, PlayerRepository>(provider => new PlayerRepository(connectionString));
+            services.AddTransient<IPlayerFrameDataRepository, PlayerFrameDataRepositoryRepository>(provider => new PlayerFrameDataRepositoryRepository(connectionString));
             services.AddMvc();
         }
 
