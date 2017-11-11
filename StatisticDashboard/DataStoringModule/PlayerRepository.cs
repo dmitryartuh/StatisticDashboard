@@ -32,7 +32,7 @@ namespace DataStoringModule
             using (var db = new SqlConnection(_connectionString))
             {
                 await db.ExecuteAsync(
-                    @"INSERT INRO Player (Id, WotId) VALUES(@Id, @WotId)",
+                    @"INSERT INTO Player (Id, WotId, Nickname, Lang) VALUES(@Id, @WotId, @Nickname, @Lang)",
                     model);
             }
         }

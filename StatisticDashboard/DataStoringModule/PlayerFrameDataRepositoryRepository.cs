@@ -1,8 +1,10 @@
-﻿using System.Data.SqlClient;
+﻿using System;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
 using DataStoringModule.Interfaces;
 using Models.Entities;
+using System.Linq;
 
 namespace DataStoringModule
 {
@@ -20,8 +22,21 @@ namespace DataStoringModule
             using (var db = new SqlConnection(_connectionString))
             {
                 await db.ExecuteAsync(
-                    @"INSERT INRO PlayerFrameData (Id, PlayerId, Json, DateTime) VALUES(@Id, @PlayerId, @Json, @DateTime)",
+                    @"INSERT INTO PlayerFrameData
+                        (Id, PlayerId, Json, DateTime, FrameId)
+                    VALUES
+                        (@Id, @PlayerId, @Json, @DateTime, @FrameId)",
                     playerFrameData);
+            }
+        }
+        async Task<PlayerFrameData> IPlayerFrameDataRepository.GetLastFrameForPlayer(Guid playerId)
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                return (await db.QueryAsync<PlayerFrameData>(
+                    @"SELECT TOP(1)* FROM PlayerFrameData
+                        WHERE PlayerId = @payerId
+                        ORDER BY DateTime")).FirstOrDefault();
             }
         }
     }
