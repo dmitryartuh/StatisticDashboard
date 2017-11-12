@@ -1,0 +1,60 @@
+﻿@using Models.DtoModels
+@using Newtonsoft.Json
+@model IEnumerable<Models.Entities.PlayerFrame>
+
+@{
+    ViewBag.Title = "Players";
+    Func<PlayerStatisticDto, PlayerStatisticDto, string> action = (start, end) => $"{end.All.Battles - start.All.Battles},{end.Clan.Battles - start.Clan.Battles}";
+}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+    google.charts.load("current", {packages:["timeline"]});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+
+        var container = document.getElementById('example3.1');
+        var chart = new google.visualization.Timeline(container);
+        var dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({ type: 'string', id: 'Position' });
+        dataTable.addColumn({ type: 'string', id: 'Name' });
+        dataTable.addColumn({ type: 'date', id: 'Start' });
+        dataTable.addColumn({ type: 'date', id: 'End' });
+        dataTable.addRows([
+            @*@foreach (var data in Model)
+            {
+                var playerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(data.Json);
+                @:['@data.Nickname', '@Func(playerStatisticDto)', new Date(@data.DateTime.Year, @data.DateTime.Month, @data.DateTime.Day, @data.DateTime.Hour, @data.DateTime.Minute, 0), new Date(@data.DateTime.Year, @data.DateTime.Month, @data.DateTime.Day, @data.DateTime.Hour, @data.DateTime.Minute, @data.DateTime.Second)],
+            }*@
+
+            @foreach (var data in Model.GroupBy(x => x.Nickname).OrderBy(x=>x.Key))
+            {
+                var list = data.OrderBy(x=>x.DateTime).ToList();
+                for (int i = 1; i < list.Count; i++)
+                {
+                    var startDate = list[i - 1].DateTime.ToLocalTime();
+                    var endDate = list[i].DateTime.ToLocalTime();
+                    var startPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i - 1].Json);
+                    var endPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i].Json);
+                    var all = endPlayerStatisticDto.All.Battles - startPlayerStatisticDto.All.Battles;
+                    var expectedStartDate = endDate.AddMinutes(-10 * all ?? 0);
+                    if (expectedStartDate.CompareTo(startDate) > 0)
+                    {
+                        startDate = expectedStartDate;
+                    }
+                    var text = action(startPlayerStatisticDto, endPlayerStatisticDto);
+                    @:['@list[i].Nickname', '@text', new Date(@startDate.Year, @startDate.Month, @startDate.Day, @startDate.Hour, @startDate.Minute, @startDate.Second), new Date(@endDate.Year, @endDate.Month, @endDate.Day, @endDate.Hour, @endDate.Minute, @endDate.Second)],
+                }
+            }
+        ]);
+
+        var options = {
+            timeline: { colorByRowLabel: true }
+        };
+
+        chart.draw(dataTable, options);
+    }
+</script>
+
+<div id="example3.1" style="height: 2000px;"></div>

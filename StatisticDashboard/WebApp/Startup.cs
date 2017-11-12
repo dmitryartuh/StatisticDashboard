@@ -24,7 +24,7 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = @"Server=(localdb)\MSSQLLocalDB;Initial Catalog=StatisticDashboard;Integrated Security=True";
+            string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=StatisticDashboard;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             services.AddTransient<IPlayerRepository, PlayerRepository>(provider => new PlayerRepository(connectionString));
             services.AddTransient<IPlayerFrameDataRepository, PlayerFrameDataRepositoryRepository>(provider => new PlayerFrameDataRepositoryRepository(connectionString));
             services.AddMvc();
@@ -54,6 +54,10 @@ namespace WebApp
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "data",
+                    template: "{controller=Home}/{action=Data}");
 
                 routes.MapSpaFallbackRoute(
                     name: "spa-fallback",
