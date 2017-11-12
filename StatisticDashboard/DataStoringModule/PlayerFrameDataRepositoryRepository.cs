@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper;
@@ -29,14 +30,46 @@ namespace DataStoringModule
                     playerFrameData);
             }
         }
-        async Task<PlayerFrameData> IPlayerFrameDataRepository.GetLastFrameForPlayer(Guid playerId)
+        async Task<PlayerFrameData> IPlayerFrameDataRepository.GetLastFrameForPlayerAsync(Guid playerId)
         {
             using (var db = new SqlConnection(_connectionString))
             {
-                return (await db.QueryAsync<PlayerFrameData>(
-                    @"SELECT TOP(1)* FROM PlayerFrameData
-                        WHERE PlayerId = @payerId
-                        ORDER BY DateTime")).FirstOrDefault();
+                try
+                {
+                    return (await db.QueryAsync<PlayerFrameData>(
+                        @"SELECT TOP(1)* FROM PlayerFrameData
+                        WHERE PlayerId = @playerId
+                        ORDER BY DateTime desc", new
+                        {
+                            playerId
+                        }))?.FirstOrDefault();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+        }
+		
+		async Task<IEnumerable<PlayerFrameData>> IPlayerFrameDataRepository.GetAllAsync()
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+				return await db.QueryAsync<PlayerFrameData>(
+					@"SELECT * FROM PlayerFrameData
+					ORDER BY DateTime desc");
+            }
+        }
+		
+		async Task<IEnumerable<PlayerFrame>> IPlayerFrameDataRepository.GetAllFramesAsync()
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+				return await db.QueryAsync<PlayerFrame>(
+                    @"SELECT PlayerFrameData.*,Player.Nickname FROM PlayerFrameData
+                        JOIN Player on Player.Id = PlayerFrameData.PlayerId
+					ORDER BY DateTime desc");
             }
         }
     }
