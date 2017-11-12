@@ -4,7 +4,7 @@
 
 @{
     ViewBag.Title = "Players";
-    Func<PlayerStatisticDto, PlayerStatisticDto, string> action = (start, end) => $"{end.All.Battles - start.All.Battles},{end.Clan.Battles - start.Clan.Battles}";
+    Func<PlayerStatisticDto, PlayerStatisticDto, string> action = (start, end) => $@"{end.All.Battles - start.All.Battles},{end.Random.Battles - start.Random.Battles},{end.GlobalmapAbsolute.Battles - start.GlobalmapAbsolute.Battles},{ end.GlobalmapChampion.Battles - start.GlobalmapChampion.Battles},{ end.GlobalmapMiddle.Battles - start.GlobalmapMiddle.Battles}";
 }
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

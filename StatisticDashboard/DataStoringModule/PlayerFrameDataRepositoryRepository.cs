@@ -23,7 +23,7 @@ namespace DataStoringModule
             using (var db = new SqlConnection(_connectionString))
             {
                 await db.ExecuteAsync(
-                    @"INSERT INTO PlayerFrameData
+                    @"INSERT INTO PlayerFrameData_new
                         (Id, PlayerId, Json, DateTime, FrameId)
                     VALUES
                         (@Id, @PlayerId, @Json, @DateTime, @FrameId)",
@@ -37,7 +37,7 @@ namespace DataStoringModule
                 try
                 {
                     return (await db.QueryAsync<PlayerFrameData>(
-                        @"SELECT TOP(1)* FROM PlayerFrameData
+                        @"SELECT TOP(1)* FROM PlayerFrameData_new
                         WHERE PlayerId = @playerId
                         ORDER BY DateTime desc", new
                         {
@@ -57,7 +57,7 @@ namespace DataStoringModule
             using (var db = new SqlConnection(_connectionString))
             {
 				return await db.QueryAsync<PlayerFrameData>(
-					@"SELECT * FROM PlayerFrameData
+                    @"SELECT * FROM PlayerFrameData_new
 					ORDER BY DateTime desc");
             }
         }
@@ -67,8 +67,8 @@ namespace DataStoringModule
             using (var db = new SqlConnection(_connectionString))
             {
 				return await db.QueryAsync<PlayerFrame>(
-                    @"SELECT PlayerFrameData.*,Player.Nickname FROM PlayerFrameData
-                        JOIN Player on Player.Id = PlayerFrameData.PlayerId
+                    @"SELECT PlayerFrameData_new.*,Player.Nickname FROM PlayerFrameData_new
+                        JOIN Player on Player.Id = PlayerFrameData_new.PlayerId
 					ORDER BY DateTime desc");
             }
         }

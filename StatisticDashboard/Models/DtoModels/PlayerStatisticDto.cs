@@ -10,5 +10,9 @@
         public PlayerDataDto StrongholdSkirmish { get; set; }
         public PlayerDataDto StrongholdDefense { get; set; }
         public PlayerDataDto Team { get; set; }
+        public PlayerDataDto GlobalmapAbsolute { get; set; }
+        public PlayerDataDto GlobalmapChampion { get; set; }
+        public PlayerDataDto GlobalmapMiddle { get; set; }
+        public PlayerDataDto Random { get; set; }
     }
 }
