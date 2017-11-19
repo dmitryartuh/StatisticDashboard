@@ -28,7 +28,9 @@
                 @:['@data.Nickname', '@Func(playerStatisticDto)', new Date(@data.DateTime.Year, @data.DateTime.Month, @data.DateTime.Day, @data.DateTime.Hour, @data.DateTime.Minute, 0), new Date(@data.DateTime.Year, @data.DateTime.Month, @data.DateTime.Day, @data.DateTime.Hour, @data.DateTime.Minute, @data.DateTime.Second)],
             }*@
 
-            @foreach (var data in Model.GroupBy(x => x.Nickname).OrderBy(x=>x.Key))
+            @foreach (var data in Model
+                //.Where(x=>x.DateTime >= DateTime.Now.AddHours(-24))
+                .GroupBy(x => x.Nickname).OrderBy(x=>x.Key))
             {
                 var list = data.OrderBy(x=>x.DateTime).ToList();
                 for (int i = 1; i < list.Count; i++)
@@ -38,6 +40,7 @@
                     var startPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i - 1].Json);
                     var endPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i].Json);
                     var all = endPlayerStatisticDto.All.Battles - startPlayerStatisticDto.All.Battles;
+                    var gk = endPlayerStatisticDto.GlobalmapAbsolute.Battles - startPlayerStatisticDto.GlobalmapAbsolute.Battles;
                     var expectedStartDate = endDate.AddMinutes(-10 * all ?? 0);
                     if (expectedStartDate.CompareTo(startDate) > 0)
                     {
@@ -50,7 +53,8 @@
         ]);
 
         var options = {
-            timeline: { colorByRowLabel: true }
+            timeline: { colorByRowLabel: true },
+            //width: 4000
         };
 
         chart.draw(dataTable, options);

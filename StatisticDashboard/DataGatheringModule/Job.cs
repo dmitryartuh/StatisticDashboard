@@ -32,10 +32,9 @@ namespace DataGatheringModule
                     //Console.WriteLine($"Started {frameId}");
                     foreach (var user in users)
                     {
-
                         if (count == 19)
                         {
-                            Thread.Sleep(1200);
+                            Thread.Sleep(2000);
                             count = 0;
                         }
                         count++;
@@ -43,8 +42,8 @@ namespace DataGatheringModule
                         if (playerData.Status == "error")
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine($"{user.Nickname} - Error!");
-                            Console.Beep(500, 1000);
+                            Console.WriteLine($"{user.Nickname} - {playerData?.Error?.Message}");
+                            //Console.Beep(500, 1000);
                             Console.ForegroundColor = ConsoleColor.Black;
                             continue;
                         }
@@ -80,7 +79,7 @@ namespace DataGatheringModule
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(e);
-                Console.Beep(500, 5000);
+                Console.Beep(500, 1000);
                 Console.ForegroundColor = ConsoleColor.Black;
             }
         }

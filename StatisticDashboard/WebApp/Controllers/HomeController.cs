@@ -97,7 +97,9 @@ namespace WebApp.Controllers
                 "Ha_cmBoJIe_BepmeJI",
                 "YLbTPA_HARDKORIIINK"
             };
-            //await AddPlayersAsync(checkClan);
+
+            var migaClan = new List<string> { "Dwayne_Wade", "Muskegon", "Makcumyc_001", "_Den_85_", "9l_Cu6up9lK", "Z_V_E_R__666", "_S_snajper_1", "D_G_O_H_H_H222", "Konstantinus1995", "Admaksimum", "jaricho", "SKA_1946", "Mishka_s_shishkoi", "057DH", "PrizPak_58rus", "_KoIIIMaP", "_MSTITEL_TATAROV_", "__Tem__", "eses181", "NegaTiV_2016_1", "mixaredhill69rus", "Petrov_F1", "KSEONNN", "Sakhalin_ZERO", "ARS80rus", "nikolaid", "gleb_tz", "__4nok_", "klim1282", "lShuckiwa_MeNl", "oltergeist", "BOXCMEN", "Morrien", "BMAN86", "Lexan311992", "VladSkrypka", "_Vampire_71", "kameniy89", "DorfKabel", "D0NALD_125", "_7_KORSAK_7_", "catalonce_10", "Pasha0177", "Sergeant002", "klopattak", "casper35", "_ByFFaLO", "Michaelq", "Denis_42region_", "Cri0sFantom", "duplet1123", "jonni8181", "Rex_228_15_metkij", "meren130", "HEPBbI_B_KACKE", "commandercool", "Irkutsk_Den", "Rostyslav777", "PECTOPATOP_VB", "THEFIRE", "misharin84", "IgorFlapjak", "ArtemBrynsk_2016", "The_EviL_Lucifer", "BolLLloY_KoLiBr", "_kobra_40", "SANYA65RE", "SubZero_777", "sergio001", "4k_q", "GAY_CLUB", "kritikuron", "Ralf40", "LOP7", "Tima3", "tank435343" };
+            //await AddPlayersAsync(migaClan, "MIGA");
             if (!IsRun)
             {
                 var job = new Job(_playerRepository, _playerFrameDataRepository);
@@ -134,7 +136,7 @@ namespace WebApp.Controllers
             await AddPlayersAsync(players);
         }
 
-        private async Task AddPlayersAsync(List<string> players)
+        private async Task AddPlayersAsync(List<string> players, string clan = null)
         {
             WotService test = new WotService();
             var langs = UrlBuilder.WotLangs;
@@ -158,7 +160,8 @@ namespace WebApp.Controllers
                             Id = Guid.NewGuid(),
                             WotId = accountId,
                             Nickname = player,
-                            Lang = lang
+                            Lang = lang,
+                            Clan = clan
                         });
 
                         break;
