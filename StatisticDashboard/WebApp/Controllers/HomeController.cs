@@ -7,6 +7,7 @@ using DataStoringModule.Interfaces;
 using System;
 using System.Linq;
 using System.Threading;
+using Models.DtoModels;
 using Newtonsoft.Json;
 
 namespace WebApp.Controllers
@@ -179,6 +180,74 @@ namespace WebApp.Controllers
         public async Task<IActionResult> Data()
         {
             return View(await _playerFrameDataRepository.GetAllFramesAsync());
+        }
+
+        public async Task<IActionResult> Battles()
+        {
+            return View(await _playerFrameDataRepository.GetAllFramesAsync());
+        }
+
+        public async Task<IActionResult> Result()
+        {
+            var res = new Dictionary<string, Dictionary<DateTime, int>>();
+            Func<DateTime, DateTime> getKey = time => new DateTime(2017, 11, 1, time.Hour, time.Minute, 0);
+            var frames = (await _playerFrameDataRepository.GetAllFramesAsync()).Where(x=>x.DateTime <= DateTime.UtcNow.AddDays(-1));
+            foreach (var clan in frames.GroupBy(x=>x.Clan).OrderBy(x=>x.Key))
+            {
+                var resDict = new Dictionary<DateTime, int>();
+                foreach(var data in clan
+                    //.Where(x=>x.DateTime >= DateTime.Now.AddHours(-24))
+                    .GroupBy(x => x.Nickname).OrderBy(x => x.Key))
+                {
+                    var list = data.OrderBy(x => x.DateTime).ToList();
+                    var localDict = new Dictionary<DateTime, int>();
+                    for (int i = 1; i < list.Count; i++)
+                    {
+                        var startDate = list[i - 1].DateTime.ToLocalTime();
+                        var endDate = list[i].DateTime.ToLocalTime();
+                        var startPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i - 1].Json);
+                        var endPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i].Json);
+                        var all = endPlayerStatisticDto.All.Battles - startPlayerStatisticDto.All.Battles;
+                        var expectedStartDate = endDate.AddMinutes(-10 * all ?? 0);
+                        if (expectedStartDate.CompareTo(startDate) > 0)
+                        {
+                            startDate = expectedStartDate;
+                        }
+
+                        while (startDate.Minute % 5 != 0)
+                        {
+                            startDate = startDate.AddMinutes(-1);
+                        }
+
+                        while (startDate <= endDate)
+                        {
+                            var key = getKey(startDate);
+                            if (!localDict.ContainsKey(key))
+                            {
+                                localDict.Add(key, 1);
+                            }
+
+                            startDate = startDate.AddMinutes(5);
+                        }
+                    }
+
+                    foreach (var localValue in localDict)
+                    {
+                        if (resDict.ContainsKey(localValue.Key))
+                        {
+                            resDict[localValue.Key]++;
+                        }
+                        else
+                        {
+                            resDict.Add(localValue.Key, 1);
+                        }
+                    }
+                }
+
+                res.Add(clan.Key, resDict);
+            }
+
+            return View(res);
         }
     }
 }

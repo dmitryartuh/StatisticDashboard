@@ -1,0 +1,66 @@
+﻿@using Models.DtoModels
+@using Newtonsoft.Json
+@model System.Collections.Generic.IEnumerable<Models.Entities.PlayerFrame>
+
+@{
+    ViewBag.Title = "battles";
+    var id = 0;
+}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+@foreach (var clan in Model.GroupBy(x => x.Clan).OrderBy(x => x.Key))
+{
+    id++;
+    <script>
+    google.charts.load('current', { packages: ['corechart', 'bar'] });
+    google.charts.setOnLoadCallback(drawMultSeries);
+
+    function drawMultSeries() {
+        var data = google.visualization.arrayToDataTable([
+            ['Player', 'week', 'last 24h'],
+            @foreach (var data in clan
+              .Where(x=>x.DateTime >= DateTime.Now.AddDays(-7))
+              .GroupBy(x => x.Nickname).OrderBy(x=>x.Key))
+            {
+                var total = 0;
+                var last24 = 0;
+                var list = data.OrderBy(x=>x.DateTime).ToList();
+                for (int i = 1; i < list.Count; i++)
+                {
+                    var startDate = list[i - 1].DateTime.ToLocalTime();
+                    var endDate = list[i].DateTime.ToLocalTime();
+                    var startPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i - 1].Json);
+                    var endPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i].Json);
+                    var all = endPlayerStatisticDto.All.Battles - startPlayerStatisticDto.All.Battles;
+                    var expectedStartDate = endDate.AddMinutes(-10 * all ?? 0);
+                    if (expectedStartDate.CompareTo(startDate) > 0)
+                    {
+                        startDate = expectedStartDate;
+                    }
+                    total += all ?? 0;
+                    last24 += startDate >= DateTime.UtcNow.AddHours(-24) ? all ?? 0 : 0;
+                }
+                    @:['@data.Key', @total, @last24],
+            }
+        ]);
+
+        var options = {
+            title: '@clan.FirstOrDefault()?.Clan',
+            chartArea: { width: '50%' },
+            hAxis: {
+                title: 'count',
+                minValue: 0
+            },
+            vAxis: {
+                title: 'player'
+            }
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('chart_div_@id'));
+        chart.draw(data, options);
+    }
+    </script>
+
+
+    <div id="chart_div_@id" style="height: @(clan.GroupBy(x => x.Nickname).Count() * 50)px;"></div>
+}

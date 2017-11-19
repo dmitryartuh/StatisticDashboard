@@ -67,7 +67,7 @@ namespace DataStoringModule
             using (var db = new SqlConnection(_connectionString))
             {
 				return await db.QueryAsync<PlayerFrame>(
-                    @"SELECT PlayerFrameData_new.*,Player.Nickname FROM PlayerFrameData_new
+                    @"SELECT PlayerFrameData_new.*,Player.Nickname, Player.Clan FROM PlayerFrameData_new
                         JOIN Player on Player.Id = PlayerFrameData_new.PlayerId
 					ORDER BY DateTime desc");
             }

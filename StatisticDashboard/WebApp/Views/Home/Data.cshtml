@@ -4,61 +4,70 @@
 
 @{
     ViewBag.Title = "Players";
-    Func<PlayerStatisticDto, PlayerStatisticDto, string> action = (start, end) => $@"{end.All.Battles - start.All.Battles},{end.Random.Battles - start.Random.Battles},{end.GlobalmapAbsolute.Battles - start.GlobalmapAbsolute.Battles},{ end.GlobalmapChampion.Battles - start.GlobalmapChampion.Battles},{ end.GlobalmapMiddle.Battles - start.GlobalmapMiddle.Battles}";
+    //Func<PlayerStatisticDto, PlayerStatisticDto, string> action = (start, end) => $@"{end.All.Battles - start.All.Battles},{end.Random.Battles - start.Random.Battles},{end.GlobalmapAbsolute.Battles - start.GlobalmapAbsolute.Battles},{ end.GlobalmapChampion.Battles - start.GlobalmapChampion.Battles},{ end.GlobalmapMiddle.Battles - start.GlobalmapMiddle.Battles}";
+    Func<PlayerStatisticDto, PlayerStatisticDto, string> action = (start, end) => $@"{end.All.Battles - start.All.Battles}";
+    var id = 0;
 }
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-<script type="text/javascript">
-    google.charts.load("current", {packages:["timeline"]});
-    google.charts.setOnLoadCallback(drawChart);
-    function drawChart() {
+@foreach (var clan in Model.GroupBy(x => x.Clan).OrderBy(x => x.Key))
+{
+    id++;
+    <script type="text/javascript">
+        google.charts.load("current", { packages: ["timeline"] });
+        google.charts.setOnLoadCallback(drawChart);
 
-        var container = document.getElementById('example3.1');
-        var chart = new google.visualization.Timeline(container);
-        var dataTable = new google.visualization.DataTable();
-        dataTable.addColumn({ type: 'string', id: 'Position' });
-        dataTable.addColumn({ type: 'string', id: 'Name' });
-        dataTable.addColumn({ type: 'date', id: 'Start' });
-        dataTable.addColumn({ type: 'date', id: 'End' });
-        dataTable.addRows([
-            @*@foreach (var data in Model)
+        function drawChart() {
+
+            var container = document.getElementById('example_@id');
+            var chart = new google.visualization.Timeline(container);
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn({ type: 'string', id: 'Position' });
+            dataTable.addColumn({ type: 'string', id: 'Name' });
+            dataTable.addColumn({ type: 'date', id: 'Start' });
+            dataTable.addColumn({ type: 'date', id: 'End' });
+            dataTable.addRows([
+                @*@foreach (var data in Model)
             {
                 var playerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(data.Json);
                 @:['@data.Nickname', '@Func(playerStatisticDto)', new Date(@data.DateTime.Year, @data.DateTime.Month, @data.DateTime.Day, @data.DateTime.Hour, @data.DateTime.Minute, 0), new Date(@data.DateTime.Year, @data.DateTime.Month, @data.DateTime.Day, @data.DateTime.Hour, @data.DateTime.Minute, @data.DateTime.Second)],
             }*@
 
-            @foreach (var data in Model
-                //.Where(x=>x.DateTime >= DateTime.Now.AddHours(-24))
-                .GroupBy(x => x.Nickname).OrderBy(x=>x.Key))
-            {
-                var list = data.OrderBy(x=>x.DateTime).ToList();
-                for (int i = 1; i < list.Count; i++)
+                @foreach (var data in clan
+                   //.Where(x=>x.DateTime >= DateTime.Now.AddHours(-24))
+                   .GroupBy(x => x.Nickname).OrderBy(x => x.Key))
                 {
-                    var startDate = list[i - 1].DateTime.ToLocalTime();
-                    var endDate = list[i].DateTime.ToLocalTime();
-                    var startPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i - 1].Json);
-                    var endPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i].Json);
-                    var all = endPlayerStatisticDto.All.Battles - startPlayerStatisticDto.All.Battles;
-                    var gk = endPlayerStatisticDto.GlobalmapAbsolute.Battles - startPlayerStatisticDto.GlobalmapAbsolute.Battles;
-                    var expectedStartDate = endDate.AddMinutes(-10 * all ?? 0);
-                    if (expectedStartDate.CompareTo(startDate) > 0)
+                    var list = data.OrderBy(x => x.DateTime).ToList();
+                    for (int i = 1; i < list.Count; i++)
                     {
-                        startDate = expectedStartDate;
+                        var startDate = list[i - 1].DateTime.ToLocalTime();
+                        var endDate = list[i].DateTime.ToLocalTime();
+                        var startPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i - 1].Json);
+                        var endPlayerStatisticDto = JsonConvert.DeserializeObject<PlayerStatisticDto>(list[i].Json);
+                        var all = endPlayerStatisticDto.All.Battles - startPlayerStatisticDto.All.Battles;
+                        var gk = endPlayerStatisticDto.GlobalmapAbsolute.Battles - startPlayerStatisticDto.GlobalmapAbsolute.Battles;
+                        var expectedStartDate = endDate.AddMinutes(-10 * all ?? 0);
+                        if (expectedStartDate.CompareTo(startDate) > 0)
+                        {
+                            startDate = expectedStartDate;
+                        }
+                        var text = action(startPlayerStatisticDto, endPlayerStatisticDto);
+                        @:['@list[i].Nickname', '@text', new Date(@startDate.Year, @startDate.Month, @startDate.Day, @startDate.Hour, @startDate.Minute, @startDate.Second), new Date(@endDate.Year, @endDate.Month, @endDate.Day, @endDate.Hour, @endDate.Minute, @endDate.Second)],
                     }
-                    var text = action(startPlayerStatisticDto, endPlayerStatisticDto);
-                    @:['@list[i].Nickname', '@text', new Date(@startDate.Year, @startDate.Month, @startDate.Day, @startDate.Hour, @startDate.Minute, @startDate.Second), new Date(@endDate.Year, @endDate.Month, @endDate.Day, @endDate.Hour, @endDate.Minute, @endDate.Second)],
                 }
-            }
-        ]);
+            ]);
 
-        var options = {
-            timeline: { colorByRowLabel: true },
-            //width: 4000
-        };
+            var options = {
+                timeline: { colorByRowLabel: true },
+                //width: 4000
+            };
 
-        chart.draw(dataTable, options);
-    }
-</script>
+            chart.draw(dataTable, options);
+        }
+    </script>
 
-<div id="example3.1" style="height: 2000px;"></div>
+
+    <div id="example_@id" style="height: 2000px;"></div>
+    <br/>
+}

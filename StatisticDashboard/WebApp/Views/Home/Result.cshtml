@@ -1,0 +1,77 @@
+﻿@using Models.DtoModels
+@using Newtonsoft.Json
+@model System.Collections.Generic.Dictionary<string,System.Collections.Generic.Dictionary<System.DateTime,int>>
+
+@{
+    ViewBag.Title = "play time";
+    var id = 0;
+}
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+@foreach (var res in Model)
+{
+    var border50 = res.Value.Values.Max() / 2;
+    var border10 = res.Value.Values.Max() / 10;
+    var border30 = res.Value.Values.Max() / 3.3;
+    var border80 = res.Value.Values.Max() * 0.8;
+    var getLabel = new Func<int, string>((value) =>
+    {
+        if (value <= border10)
+        {
+            return "0%-10%";
+        }
+        if (value <= border30)
+        {
+            return "10%-30%";
+        }
+        if (value <= border50)
+        {
+            return "30%-50%";
+        }
+        if (value <= border80)
+        {
+            return "50%-80%";
+        }
+
+        return "80%-100%";
+    });
+    id++;
+    <h3>@res.Key</h3>
+    <script type="text/javascript">
+        google.charts.load("current", { packages: ["timeline"] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            var container = document.getElementById('example_@id');
+            var chart = new google.visualization.Timeline(container);
+            var dataTable = new google.visualization.DataTable();
+            dataTable.addColumn({ type: 'string', id: 'Position' });
+            dataTable.addColumn({ type: 'string', id: 'Name' });
+            dataTable.addColumn({ type: 'date', id: 'Start' });
+            dataTable.addColumn({ type: 'date', id: 'End' });
+            dataTable.addRows([
+                @foreach (var data in res.Value.OrderByDescending(x=>x.Value))
+                {
+                    var startDate = data.Key.AddMinutes(-5);
+                    if (startDate.Day == data.Key.Day)
+                    {
+                        @:['@getLabel(data.Value)', '', new Date(@startDate.Year, @startDate.Month, @startDate.Day, @startDate.Hour, @startDate.Minute, @startDate.Second), new Date(@data.Key.Year, @data.Key.Month, @data.Key.Day, @data.Key.Hour, @data.Key.Minute, @data.Key.Second)],
+                    }
+                }
+            ]);
+
+            var options = {
+                timeline: { colorByRowLabel: true },
+                //width: 4000
+            };
+
+            chart.draw(dataTable, options);
+        }
+    </script>
+
+
+    <div id="example_@id" style="height: 400px;"></div>
+}
